@@ -6,21 +6,14 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>360 controller site</h1>
+    <h1>Load USB Devices</h1>
     <button id="action-button">Reload</button>
     <button id="action-button2">Reload all devices</button>
     <p id="usb-info"></p>
     <script>
         
         document.getElementById('action-button').onclick = function changeContent() {
-            navigator.usb.requestDevice({filters: [{vendorId: 0x24c6 }]})
-            .then(device => {
-            document.getElementById('usb-info').innerText = device.productName;
-                console.log(device.productName); // "XB1 Classic Controller"
-                console.log(device);
-            })
-            .catch(err => {console.error(err);});
-            navigator.usb.requestDevice({filters: [{vendorId: 0x0e6f }, {vendorId: 0x24c6}]})
+            navigator.usb.requestDevice({filters: [{vendorId: 0x0e6f }, {vendorId: 0x24c6}, {vendorId: 0x0951 }]})
             .then(device => {
             document.getElementById('usb-info').innerText = device.productName;
                 console.log(device.productName); // "XB1 Classic Controller"
@@ -29,17 +22,18 @@
             .catch(err => {console.error(err);});
         }
         document.getElementById('action-button2').onclick = function changeContent() {    
-            navigator.usb.requestDevice({filters: [{vendorId: 0x0951 }]})
-            .then(device => {
-                let prevText = document.getElementById('usb-info').innerText;
-                document.getElementById('usb-info').innerText = `${prevText} ${device.productName}`;
-                console.log(device.productName);
-                console.log(device);
-            })
-            .catch(err => {console.error(err);});
             navigator.usb.getDevices().then(devices => {
                 devices.forEach(device => {
-                    document.getElementById('usb-info').innerText = device;
+                    if (document.getElementById(device.vendorId)) {
+                        alert(`${device.productName} already loaded!`);
+                        return;
+                    }
+                    let element = document.createElement('p');
+                    element.id = device.vendorId;
+                    element.innerText = device.productName;
+                    document.body.appendChild(element);
+                    // .innerText = device.productName);
+                    // document.getElementById('usb-info').innerText = device.productName;
                     console.log(device)
                     // console.log(device.productName);      // "Arduino Micro"
                     // console.log(device.manufacturerName); // "Arduino LLC"
