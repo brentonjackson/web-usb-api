@@ -1,0 +1,52 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>360 controller site</h1>
+    <button id="action-button">Reload</button>
+    <button id="action-button2">Reload all devices</button>
+    <p id="usb-info"></p>
+    <script>
+        
+        document.getElementById('action-button').onclick = function changeContent() {
+            navigator.usb.requestDevice({filters: [{vendorId: 0x24c6 }]})
+            .then(device => {
+            document.getElementById('usb-info').innerText = device.productName;
+                console.log(device.productName); // "XB1 Classic Controller"
+                console.log(device);
+            })
+            .catch(err => {console.error(err);});
+            navigator.usb.requestDevice({filters: [{vendorId: 0x0e6f }, {vendorId: 0x24c6}]})
+            .then(device => {
+            document.getElementById('usb-info').innerText = device.productName;
+                console.log(device.productName); // "XB1 Classic Controller"
+                console.log(device);
+            })
+            .catch(err => {console.error(err);});
+        }
+        document.getElementById('action-button2').onclick = function changeContent() {    
+            navigator.usb.requestDevice({filters: [{vendorId: 0x0951 }]})
+            .then(device => {
+                let prevText = document.getElementById('usb-info').innerText;
+                document.getElementById('usb-info').innerText = `${prevText} ${device.productName}`;
+                console.log(device.productName);
+                console.log(device);
+            })
+            .catch(err => {console.error(err);});
+            navigator.usb.getDevices().then(devices => {
+                devices.forEach(device => {
+                    document.getElementById('usb-info').innerText = device;
+                    console.log(device)
+                    // console.log(device.productName);      // "Arduino Micro"
+                    // console.log(device.manufacturerName); // "Arduino LLC"
+                });
+            })
+        }
+        
+    </script>
+</body>
+</html>
